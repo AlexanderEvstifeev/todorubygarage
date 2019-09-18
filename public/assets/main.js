@@ -3,15 +3,19 @@ let new_project = document.querySelector('#new_project');
 function getTodoProject() {
     fetch('/get-todo-project',
         {
-            method: 'POST'
+            method: 'POST',
+            headers : { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+               }
         }
     ).then(function (res) {
-        return res.text();
+        return res.json();
     }
     ).then(function (body) {
         let showBody = JSON.parse(body);
 
-         console.log('body= ', showBody);
+         //console.log('body= ', showBody);
         let out = '';
 
 
@@ -175,11 +179,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 dataType: 'json',
                 contentType: "application/json; charset=UTF-8",
                 data: JSON.stringify({ key: formActionId, Title: areaTextTask.val() }),
-                success: function (data) {
-console.log(data)
-                },
-                error: function(e) {
-                   console.log(e);
+                success: function (body) {
+                    let out;
+                    out += `<tr data-task-id="${body}" >`;
+                    out += `<td class="todo-list-checkbox"><input type="checkbox"></td>`;
+                    out += `<td class="todo-list-divider">&nbsp;</td>`;
+                    out += `<td class="todo-list-task"><p>${areaTextTask.val()}</p></td>`;
+                    out += `<td class="todo-list-actions">`;
+                    out += `<ul class="hidden">`
+                    out += `<li><a class="todo-list-task-sort" href="#">Sort</a></li>`
+                    out += `<li><a class="todo-list-task-edit" href="#">Edit</a></li>`
+                    out += `<li><a class="todo-list-task-delete" href="#">Delete</a></li>`;
+                    out += `</ul></td>`;
+                    out += `</tr>`;
+                    $(`#todos-${formActionId}`).find('tbody').append(out);
+console.log(body)
+$(this).parent().find('input').val().html = ''
                 }
             })
         })

@@ -39,9 +39,19 @@ const bodyParser = require('body-parser');
         let sql = `UPDATE tasks SET status='${(status)}' WHERE tasksID='${(idTask)}'`;
         let query = db.query(sql, (err, result, fields) => {
             if (err) throw err;
-            console.log('result------->',result);
+            //console.log('result------->',result);
             res.json(result);
         })
     });
+
+    router.post('/delete-task', (req, res) => {
+        let idTask = req.body.key;
+        console.log('req.body.key==', idTask)
+        let sql = `DELETE FROM tasks WHERE tasksID IN (${(idTask)})`;
+        let query = db.query(sql, (err, result, fields) => {
+            if (err) throw err;
+        })
+    })
+
 
     module.exports = router;
